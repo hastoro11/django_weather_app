@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'bootstrap.css' %}">
+  <title>Weather - {{ city }}</title>
+  <style>
+      .bg-overlay {
+      {% if image_link %}
+          background: url({{ image_link }});
+      {% endif %}
+      {% if image_pct %}
+          background: url("{{ image_pct }}");
+      {% endif %}
+      {#  background: url(#}{#  {% if image_link %} {{image_link}}#}{#  {% else %}"{% static image_pct %}"{% endif %}#}{#  );#} background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center center;
+      {#color: #fff;#}
+      }
+  </style>
+</head>
+<body class="bg-overlay">
+<section class="vh-100">
+  <div class="container py-5 h-100">
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-10 col-lg-8 col-xl-8 p-5" style="background: rgb(255,255,255,0.8);">
+        {% if error %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+        <h3 class="mb-4 pb-2 fw-normal">Check the weather forecast</h3>
+        <form method="get" action="{% url 'index' %}">
+          <div class="input-group rounded mb-3">
+            <input type="search" class="form-control rounded" placeholder="City" aria-label="Search"
+                   aria-describedby="search-addon" name="city" value="{{ city }}"/>
+            <button type="submit" class="input-group-text border-0 fw-bold" id="search-addon">
+              Check!
+            </button>
+          </div>
+
+
+          <div class="mb-4 pb-2">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="units" id="inlineRadio1"
+                     value="metric" {% if units == 'metric' %}checked{% endif %}/>
+              <label class="form-check-label" for="inlineRadio1">Celsius</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="units" id="inlineRadio2"
+                     value="imperial" {% if units == 'imperial' %}checked{% endif %}/>
+              <label class="form-check-label" for="inlineRadio2">Farenheit</label>
+            </div>
+          </div>
+        </form>
+
+        <div class="card shadow-0 border">
+          <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="mb-1 sfw-normal h4">{{ city }}</span><span><img
+                src="https://openweathermap.org/img/wn/{{ weather.icon }}.png" alt=""></span>
+            </div>
+            <p class="mb-2">Current temperature: <strong>{{ weather.current }}°C</strong></p>
+            <p>Feels like: <strong>{{ weather.feels_like }}°C</strong></p>
+            <p>Max: <strong>{{ weather.max }}°C</strong>, Min: <strong>{{ weather.min }}°C</strong></p>
+
+            <div class="d-flex flex-row align-items-center">
+              <p class="mb-0 me-4">{{ weather.description|capfirst }}</p>
+              <i class="fas fa-cloud fa-3x" style="color: #eee;"></i>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+<script src="{% static 'bootstrap.js' %}"></script>
+<script>
+
+    rdBtns = document.querySelectorAll('input[type="radio"]')
+
+    for (btn of rdBtns) {
+        btn.addEventListener('click', changeMetric)
+    }
+
+    submit = document.getElementById('search-addon')
+
+    function changeMetric(e) {
+        submit.click()
+
+    }
+</script>
+</body>
+</html>
